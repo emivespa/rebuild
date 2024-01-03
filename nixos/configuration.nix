@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, pkgs-unstable, ... }:
 
 {
   imports =
@@ -25,7 +25,9 @@
   networking.networkmanager.enable = true;
 
   # Set your time zone.
-  time.timeZone = "America/Argentina/Buenos_Aires";
+  time.timeZone = "America/Atikokan"; # GMT-5
+  # time.timeZone = "America/Argentina/Buenos_Aires"; # GMT-3
+  # time.timeZone = "Europe/London"; # GMT
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
@@ -45,15 +47,21 @@
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
-  # Enable the GNOME Desktop Environment.
+# Enable the GNOME Desktop Environment.
+  services.xserver.displayManager.defaultSession = "gnome";
   services.xserver.displayManager.gdm = {
     enable = true;
-    wayland = false; # Xorg for sxhkd.
+    wayland = false; # Xorg is a better default, no?
   };
   services.xserver.desktopManager.gnome.enable = true;
-  services.xserver.desktopManager.gnome.flashback.enableMetacity = true;
+  services.xserver.desktopManager.gnome.flashback.enableMetacity = true; # (Acts like a diff desktop manager.)
   services.xserver.windowManager.icewm.enable = true;
-  services.xserver.desktopManager.lxqt.enable = true;
+  services.xserver.desktopManager.xfce.enable = true;
+  services.xserver.windowManager.awesome.enable = true;
+  services.xserver.windowManager.awesome.luaModules = with pkgs.luaPackages; [
+    luarocks # is the package manager for Lua modules
+    luadbi-mysql # Database abstraction layer
+  ];
 
   # Configure keymap in X11
   services.xserver = {
@@ -67,6 +75,7 @@
   # Enable sound with pipewire.
   sound.enable = true;
   hardware.pulseaudio.enable = false;
+  # hardware.pulseaudio.enable = true;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -106,55 +115,69 @@
     (
       neovim.override {
         viAlias = true;
-        vimAlias = true;
+        vimAlias = false;
       }
     )
     wget
 
     # TODO: sql stuff
+    # nvi # M-less vi clone. FIXME.
+    # wineWowPackages.stable winetricks # Wine.
     # xterm # FIXME: comes by default with Gnome.
-    aws-sam-cli awscli2
-    bc
+    aws-sam-cli awscli2 # AWS stuff.
     blender
-    cmake gnumake # make
+    busybox # Utilities you would assume to have by default, like bc and killall.
+    cmake gnumake # Make.
     curl
-    direnv nix-direnv # direnv stuff
-    entr
-    ffmpeg
+    dig # Domain name server.
+    direnv nix-direnv # Direnv stuff.
+    entr # Poor man's watch mode.
+    ffmpeg x265
     fzf
     gcc
-    git gh # git and forges
-    gnome.gnome-tweaks
-    gnome.pomodoro
-    gnomeExtensions.app-icons-taskbar
-    gnomeExtensions.dash-to-panel
-    gnomeExtensions.vitals
-    go gotools # Go is a tool for managing Go source code.
-    htop-vim
-    jdk # java
-    kubectl kubectx kubernetes-helm minikube # k8s stuff
+    gimp
+    git gh # Git and forges.
+    gnome.gnome-tweaks gnome.pomodoro gnomeExtensions.app-icons-taskbar gnomeExtensions.vitals # TODO: move to desktopManager.
+    go gotools # Go.
+    gtypist
+    hexchat
+    htop-vim # TODO: where is this actually from?
+    imagemagick
+    jdk eclipses.eclipse-sdk maven # Java.
+    keyd # Kernel level remapping utility.
+    kubectl kubectx kubernetes-helm minikube # Kubernetes stuff.
+    lf
+    libreoffice # Open MS Office stuff.
     losslesscut-bin
-    lua luajit luarocks # lua
-    man-pages man-pages-posix # man
-    moreutils
-    neofetch
-    nixfmt # nix stuff
-    nodePackages.pnpm nodejs-18_x # node stuff
+    lua luajit luarocks # Lua.
+    man-pages man-pages-posix # Man pages.
+    moreutils # "a collection of the unix tools that nobody thought to write long ago when unix was young."
+    netbeans
+    nixfmt # Nix stuff.
+    nodePackages.pnpm nodejs-18_x # Node stuff.
     obs-studio
-    python311 python311Packages.pip python311Packages.virtualenv # python stuff
-    qbittorrent
-    ripgrep
-    rpi-imager
+    plantuml
+    pwgen
+    python311 python311Packages.pip python311Packages.virtualenv # Python stuff.
+    qbittorrent transmission-gtk # Torrents
+    ripgrep # Needed for some nvim plugins.
+    rpi-imager # Rufus clone made by Raspberry Pi (non R.Pi specific).
+    rustup
     shellcheck
-    sxhkd xorg.xev xorg.xmodmap # sxhkd and friends
-    tealdeer
+    sxhkd xorg.xev # Sxhkd and friend.
+    tealdeer # TLDR pages.
     terraform
     tmux
+    tor-browser
     vlc
+    volumeicon # For IceWm
     vscode
-    xsel 
+    xfce.xfce4-pulseaudio-plugin
+    xfce.xfce4-volumed-pulse
+    xsel # Clipboard utitity.
     yt-dlp # FIXME: use unstable.
-    zip unzip # zip and unzip
+    zig
+    zip unzip
 
   ];
 
@@ -170,6 +193,17 @@
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
+  services.syncthing = {
+    enable = true;
+    user = "nixos";
+    dataDir = "/home/nixos/Sync";
+    # configDir = "/home/nixos/Sync/.config/syncthing";
+    configDir = "/home/nixos/.config/syncthing"; # TODO: don't hardcode.
+  };
+  # Syncthing ports <https://nixos.wiki/wiki/Syncthing>:
+  networking.firewall.allowedTCPPorts = [ 8384 22000 ];
+  networking.firewall.allowedUDPPorts = [ 22000 21027 ];
+
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
