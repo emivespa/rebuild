@@ -8,6 +8,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      # /etc/nixos/hardware-configuration.nix
     ];
 
   # Bootloader.
@@ -127,6 +128,7 @@
     aws-sam-cli awscli2 # AWS stuff.
     blender
     busybox # Utilities you would assume to have by default, like bc and killall.
+    calibre
     cmake gnumake # Make.
     curl
     dig # Domain name server.
@@ -230,5 +232,11 @@
   # > apropos, whatis and man -k do not find anything when run,
   # > because the man page index cache is not generated.
   # - https://nixos.wiki/wiki/Apropos
+
+  # MULLVAD VPN
+  #
+  # https://nixos.wiki/wiki/Mullvad_VPN
+  services.mullvad-vpn.enable = true;
+  services.mullvad-vpn.package = pkgs.mullvad-vpn;
 
 }
