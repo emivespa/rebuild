@@ -7,8 +7,8 @@
 {
   imports =
     [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-      # /etc/nixos/hardware-configuration.nix
+      # ./hardware-configuration.nix
+      /etc/nixos/hardware-configuration.nix
     ];
 
   # Bootloader.
@@ -55,14 +55,14 @@
     wayland = false; # Xorg is a better default, no?
   };
   services.xserver.desktopManager.gnome.enable = true;
-  services.xserver.desktopManager.gnome.flashback.enableMetacity = true; # (Acts like a diff desktop manager.)
-  services.xserver.windowManager.icewm.enable = true;
-  services.xserver.desktopManager.xfce.enable = true;
-  services.xserver.windowManager.awesome.enable = true;
-  services.xserver.windowManager.awesome.luaModules = with pkgs.luaPackages; [
-    luarocks # is the package manager for Lua modules
-    luadbi-mysql # Database abstraction layer
-  ];
+  # services.xserver.desktopManager.gnome.flashback.enableMetacity = true; # (Acts like a diff desktop manager.)
+  # services.xserver.windowManager.icewm.enable = true;
+  # services.xserver.desktopManager.xfce.enable = true;
+  # services.xserver.windowManager.awesome.enable = true;
+  # services.xserver.windowManager.awesome.luaModules = with pkgs.luaPackages; [
+  #   luarocks # is the package manager for Lua modules
+  #   luadbi-mysql # Database abstraction layer
+  # ];
 
   # Configure keymap in X11
   services.xserver = {
