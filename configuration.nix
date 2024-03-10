@@ -26,8 +26,8 @@
   networking.networkmanager.enable = true;
 
   # Set your time zone.
-  time.timeZone = "America/Atikokan"; # GMT-5
-  # time.timeZone = "America/Argentina/Buenos_Aires"; # GMT-3
+  # time.timeZone = "America/Atikokan"; # GMT-5
+  time.timeZone = "America/Argentina/Buenos_Aires"; # GMT-3
   # time.timeZone = "Europe/London"; # GMT
 
   # Select internationalisation properties.
@@ -55,8 +55,7 @@
     wayland = false; # Xorg is a better default, no?
   };
   services.xserver.desktopManager.gnome.enable = true;
-  services.xserver.desktopManager.runXdgAutostartIfNone = true;
-    # Run XDG Autostart (via systemd generator I think?) if there's no desktopManager (such as none+windowManager).
+  services.xserver.desktopManager.runXdgAutostartIfNone = true; # Via Systemd generator (I think).
   services.xserver.windowManager.icewm.enable = true;
 
   # Configure keymap in X11
