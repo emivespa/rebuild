@@ -2,7 +2,8 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, pkgs-unstable, ... }:
+{ config, pkgs, ... }:
+# { config, pkgs, pkgs-unstable, ... }: # TODO.
 
 {
   imports =
@@ -130,6 +131,7 @@
     cargo rustc # Rust.
     cmake gnumake # Make.
     curl
+    deadnix
     dig # Domain name server.
     direnv nix-direnv # Direnv stuff.
     entr # Poor man's watch mode.
@@ -233,7 +235,7 @@
 
   # FONTS
   fonts = {
-    # Better font for programming.
+    # Better font for programming:
     packages = with pkgs; [ (nerdfonts.override { fonts = [ "Go-Mono" ]; }) ];
     fontconfig.defaultFonts.monospace = [ "GoMono Nerd Font" ];
   };
