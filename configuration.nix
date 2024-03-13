@@ -233,11 +233,7 @@
   services.mullvad-vpn.enable = true;
   services.mullvad-vpn.package = pkgs.mullvad-vpn;
 
-  # FONTS
-  fonts = {
-    # Better font for programming:
-    packages = with pkgs; [ (nerdfonts.override { fonts = [ "Go-Mono" ]; }) ];
-    fontconfig.defaultFonts.monospace = [ "GoMono Nerd Font" ];
-  };
+  # Try "Menlo" (improved version) before the standard monospace font:
+  fonts.fontconfig.defaultFonts.monospace = [ "Menlo" "Deja Vu Sans Mono" ];
 
 }
